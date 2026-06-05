@@ -67,6 +67,38 @@ def search(request: SearchRequest):
     
     return {"query": request.query, "results": results}
 
+@app.get("/similar/{paper_index}")
+def similar_papers(paper_index: int, top_k: int = 5):
+    if paper_index < 0 or paper_index >= len(papers):
+        return {"error": "Invalid paper index"}
+    
+    # load embeddings
+    embeddings = np.load("data/embeddings.npy")
+    
+    # use the paper's own embedding as the query
+    paper_embedding = embeddings[paper_index].reshape(1, -1)
+    faiss.normalize_L2(paper_embedding)
+    
+    # search — top_k+1 because the paper itself will be the first result
+    scores, indices = index.search(paper_embedding, top_k + 1)
+    
+    results = []
+    for score, idx in zip(scores[0], indices[0]):
+        if idx == paper_index:
+            continue  # skip the paper itself
+        paper = papers[idx]
+        results.append({
+            "index": int(idx),
+            "title": paper["title"],
+            "category": paper["category"],
+            "similarity_score": round(float(score), 4)
+        })
+    
+    return {
+        "source_paper": papers[paper_index]["title"],
+        "similar_papers": results
+    }
+
 @app.get("/stats")
 def stats():
     return {
