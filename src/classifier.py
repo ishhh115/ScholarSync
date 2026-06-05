@@ -3,6 +3,7 @@ import numpy as np
 import pickle
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
+from xgboost import XGBClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix, f1_score
 from sklearn.preprocessing import LabelEncoder
@@ -44,9 +45,10 @@ def train_and_evaluate():
     print(f"Train: {len(X_train)}, Test: {len(X_test)}")
     
     models = {
-        "Logistic Regression": LogisticRegression(max_iter=1000),
-        "Random Forest": RandomForestClassifier(n_estimators=100, random_state=42)
-    }
+    "Logistic Regression": LogisticRegression(max_iter=1000),
+    "Random Forest": RandomForestClassifier(n_estimators=100, random_state=42),
+    "XGBoost": XGBClassifier(n_estimators=100, random_state=42, eval_metric="mlogloss")
+}
     
     results = {}
     
