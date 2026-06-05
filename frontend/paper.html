@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ScholarSync — Paper</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <nav>
+    <a href="index.html" class="nav-logo">Scholar<span>Sync</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="discover.html">Discover</a></li>
+      <li><a href="assistant.html">AI Assistant</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <a href="javascript:history.back()" style="display:inline-flex;align-items:center;gap:8px;font-size:0.75rem;color:var(--muted);text-decoration:none;margin-bottom:32px;transition:color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">← Back</a>
+
+    <div id="paperContent">
+      <div class="empty-state"><div class="empty-icon">◎</div><p>Loading paper...</p></div>
+    </div>
+
+    <div id="similarSection" style="display:none;margin-top:48px;">
+      <div class="section-label">Similar Papers</div>
+      <div class="papers-grid" id="similarGrid"></div>
+    </div>
+  </div>
+
+  <script src="api.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const paperIdx = params.get('idx');
+    const paperTitle = params.get('title');
+    const query = params.get('query');
+
+    async function loadPaper() {
+      let paper = null;
+      let idx = paperIdx;
+
+      // if we have idx and query, re-fetch from search
+      if (idx !== null && query) {
+        const data = await apiPost('/search', { query: decodeURIComponent(query), top_k: 12 });
+        if (data && data.results[idx]) paper = data.results[idx];
+      }
+
+      // fallback: search by title
+      if (!paper && paperTitle) {
+        const data = await apiPost('/search', { query: decodeURIComponent(paperTitle), top_k: 5 });
+        if (data && data.results.length) paper = data.results[0];
+      }
+
+      if (!paper) {
+        document.getElementById('paperContent').innerHTML = '<div class="error-box">Could not load paper details.</div>';
+        return;
+      }
+
+      document.title = `ScholarSync — ${paper.title}`;
+
+      document.getElementById('paperContent').innerHTML = `
+        <div style="margin-bottom:12px;">
+          <span class="category-tag">${paper.predicted_category}</span>
+        </div>
+        <h1 style="font-family:'Syne',sans-serif;font-size:clamp(1.4rem,2.5vw,2rem);font-weight:800;line-height:1.3;letter-spacing:-0.02em;margin-bottom:20px;">${esc(paper.title)}</h1>
+
+        <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:32px;">
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;">
+            <span style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em">arXiv Category</span>
+            <span style="font-size:0.78rem;color:var(--text)">${paper.category}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;">
+            <span style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em">Predicted</span>
+            <span style="font-size:0.78rem;color:var(--accent2)">${paper.predicted_category}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;">
+            <span style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em">Similarity</span>
+            <span style="font-size:0.78rem;color:var(--accent)">${paper.similarity_score.toFixed(4)}</span>
+          </div>
+        </div>
+
+        <div class="section-label">Abstract</div>
+        <div style="font-size:0.85rem;line-height:1.9;color:var(--text);max-width:760px;padding:24px;background:var(--surface);border:1px solid var(--border);border-radius:12px;">
+          ${esc(paper.abstract.replace('...',''))}
+        </div>
+      `;
+
+      // load similar papers
+      if (idx !== null) {
+        const simData = await apiFetch(`/similar/${idx}?top_k=6`);
+        if (simData && simData.similar_papers && simData.similar_papers.length) {
+          document.getElementById('similarSection').style.display = 'block';
+          document.getElementById('similarGrid').innerHTML = simData.similar_papers.map((p,i) => `
+            <div class="paper-card" style="animation:fadeUp 0.4s ease ${i*0.05}s both" onclick="window.location='paper.html?title=${encodeURIComponent(p.title)}'">
+              <div class="card-title" style="margin-bottom:8px">${esc(p.title)}</div>
+              <div class="card-footer">
+                <span class="category-tag">${p.category}</span>
+                <span class="score-badge">${p.similarity_score.toFixed(3)}</span>
+              </div>
+            </div>
+          `).join('');
+        }
+      }
+    }
+
+    function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+    loadPaper();
+  </script>
+</body>
+</html>

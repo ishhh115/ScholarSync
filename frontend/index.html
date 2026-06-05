@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ScholarSync — Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <nav>
+    <a href="index.html" class="nav-logo">Scholar<span>Sync</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="discover.html">Discover</a></li>
+      <li><a href="assistant.html">AI Assistant</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div style="position:relative;z-index:10;text-align:center;padding:80px 48px 48px;">
+    <div class="page-tag fade-up">Semantic Search + AI Classification</div>
+    <h1 class="page-title fade-up" style="font-size:clamp(2.4rem,5vw,4rem);text-align:center;max-width:700px;margin:0 auto 16px;">
+      Discover Research by <em>Meaning</em>, Not Keywords
+    </h1>
+    <p class="page-sub fade-up" style="text-align:center;margin:0 auto 40px;">
+      476 arXiv papers indexed with Sentence Transformers. Search by concept, classify by topic, find similar work instantly.
+    </p>
+
+    <!-- Stats -->
+    <div style="display:flex;justify-content:center;gap:48px;margin-bottom:48px;" class="fade-up">
+      <div><div style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--accent)" id="stat-total">—</div><div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-top:2px">Papers</div></div>
+      <div><div style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--accent)">384</div><div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-top:2px">Dimensions</div></div>
+      <div><div style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--accent)">0.70</div><div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-top:2px">F1 Score</div></div>
+      <div><div style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--accent)">3</div><div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-top:2px">ML Models</div></div>
+    </div>
+
+    <!-- Search -->
+    <div class="search-wrap fade-up" style="margin:0 auto;">
+      <input type="text" class="search-box" id="searchInput" placeholder="e.g. attention mechanism in transformers..." autocomplete="off"/>
+      <button class="search-btn" id="searchBtn" onclick="doSearch()">Search</button>
+    </div>
+
+    <!-- Suggestions -->
+    <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:16px;" class="fade-up">
+      <button class="filter-pill" onclick="setQuery('graph neural networks')">graph neural networks</button>
+      <button class="filter-pill" onclick="setQuery('object detection YOLO')">object detection</button>
+      <button class="filter-pill" onclick="setQuery('reinforcement learning policy gradient')">reinforcement learning</button>
+      <button class="filter-pill" onclick="setQuery('BERT language model')">BERT language model</button>
+      <button class="filter-pill" onclick="setQuery('generative adversarial networks')">GANs</button>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="page-wrap" style="padding-top:0">
+    <div id="similarPanel" style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:32px;display:none;">
+      <div style="font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;margin-bottom:16px;">
+        Similar to: <span id="similarTitle" style="color:var(--accent)"></span>
+      </div>
+      <div id="similarList" style="display:flex;flex-direction:column;gap:10px;"></div>
+    </div>
+
+    <div id="resultsSection" style="display:none">
+      <div class="section-label" id="resultsLabel">Results</div>
+      <div class="papers-grid" id="resultsGrid"></div>
+    </div>
+
+    <div id="emptyState" class="empty-state">
+      <div class="empty-icon">◎</div>
+      <p>Type a concept, technique, or topic above<br/>to find semantically relevant papers.</p>
+    </div>
+  </div>
+
+  <script src="api.js"></script>
+  <script>
+    loadStats();
+
+    async function loadStats() {
+      const data = await apiFetch('/stats');
+      if (data) document.getElementById('stat-total').textContent = data.total_papers;
+    }
+
+    function setQuery(q) {
+      document.getElementById('searchInput').value = q;
+      doSearch();
+    }
+
+    document.getElementById('searchInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') doSearch();
+    });
+
+    async function doSearch() {
+      const query = document.getElementById('searchInput').value.trim();
+      if (!query) return;
+      const btn = document.getElementById('searchBtn');
+      btn.innerHTML = '<span class="spinner"></span>';
+      btn.disabled = true;
+
+      document.getElementById('similarPanel').style.display = 'none';
+
+      const data = await apiPost('/search', { query, top_k: 9 });
+      btn.innerHTML = 'Search';
+      btn.disabled = false;
+
+      if (!data) {
+        showError('resultsGrid');
+        document.getElementById('resultsSection').style.display = 'block';
+        document.getElementById('emptyState').style.display = 'none';
+        return;
+      }
+
+      renderResults(data);
+    }
+
+    function renderResults(data) {
+      document.getElementById('resultsSection').style.display = 'block';
+      document.getElementById('emptyState').style.display = 'none';
+      document.getElementById('resultsLabel').textContent = `${data.results.length} results for "${data.query}"`;
+
+      document.getElementById('resultsGrid').innerHTML = data.results.map((p, i) => `
+        <div class="paper-card" style="animation:fadeUp 0.4s ease ${i*0.05}s both" onclick="window.location='paper.html?idx=${i}&query=${encodeURIComponent(data.query)}'">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px;">
+            <div class="card-title">${esc(p.title)}</div>
+            <div class="score-badge">${p.similarity_score.toFixed(3)}</div>
+          </div>
+          <div class="card-abstract">${esc(p.abstract)}</div>
+          <div class="card-footer">
+            <span class="category-tag">${p.predicted_category}</span>
+            <button class="filter-pill" style="border:none;font-size:0.65rem;color:var(--muted);background:none;cursor:pointer;padding:0;" 
+              onclick="event.stopPropagation();fetchSimilar(${i},'${esc(p.title).replace(/'/g,"\\'")}')">find similar →</button>
+          </div>
+        </div>
+      `).join('');
+      window._results = data.results;
+    }
+
+    async function fetchSimilar(idx, title) {
+      const panel = document.getElementById('similarPanel');
+      const list = document.getElementById('similarList');
+      document.getElementById('similarTitle').textContent = title.length > 60 ? title.slice(0,60)+'...' : title;
+      list.innerHTML = '<div style="color:var(--muted);font-size:0.75rem">Loading...</div>';
+      panel.style.display = 'block';
+      panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+
+      const data = await apiFetch(`/similar/${idx}?top_k=5`);
+      if (!data || data.error) { list.innerHTML = '<div style="color:var(--danger);font-size:0.75rem">Could not load.</div>'; return; }
+
+      list.innerHTML = data.similar_papers.map(p => `
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--card-bg);border:1px solid var(--border);border-radius:8px;gap:16px;">
+          <div style="font-size:0.78rem;">${esc(p.title)}</div>
+          <div style="font-size:0.65rem;color:var(--success);flex-shrink:0">${p.similarity_score.toFixed(3)}</div>
+        </div>
+      `).join('');
+    }
+
+    function showError(id) {
+      document.getElementById(id).innerHTML = '<div class="error-box" style="grid-column:1/-1">⚠ Could not connect to API. Make sure server is running on port 8000.</div>';
+    }
+    function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  </script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ScholarSync — About</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <nav>
+    <a href="index.html" class="nav-logo">Scholar<span>Sync</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="discover.html">Discover</a></li>
+      <li><a href="assistant.html">AI Assistant</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="about.html" class="active">About</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="page-header">
+      <div class="page-tag">Project</div>
+      <h1 class="page-title">About <em>ScholarSync</em></h1>
+      <p class="page-sub">An AI-powered research discovery platform built with Sentence Transformers, FAISS vector search, and XGBoost classification.</p>
+    </div>
+
+    <!-- Project Journey -->
+    <div class="section-label">Project Journey</div>
+    <div style="display:flex;flex-direction:column;gap:0;margin-bottom:48px;position:relative;">
+      <div style="position:absolute;left:19px;top:24px;bottom:24px;width:2px;background:var(--border);z-index:0;"></div>
+
+      <div style="display:flex;gap:20px;align-items:flex-start;padding:20px 0;position:relative;z-index:1;">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--card-bg);border:2px solid #00e5ff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:700;color:#00e5ff">1</div>
+        <div style="padding-top:8px;">
+          <div style="font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;margin-bottom:4px;">476 papers collected</div>
+          <div style="font-size:0.78rem;color:var(--muted);line-height:1.6;">Fetched real research papers from arXiv API across 5 topics: ML, NLP, CV, RL, Deep Learning</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:20px;align-items:flex-start;padding:20px 0;position:relative;z-index:1;">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--card-bg);border:2px solid #7b61ff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:700;color:#7b61ff">2</div>
+        <div style="padding-top:8px;">
+          <div style="font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;margin-bottom:4px;">384-dimensional embeddings generated</div>
+          <div style="font-size:0.78rem;color:var(--muted);line-height:1.6;">Converted each paper abstract into a dense vector using all-MiniLM-L6-v2 Sentence Transformer model</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:20px;align-items:flex-start;padding:20px 0;position:relative;z-index:1;">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--card-bg);border:2px solid #00d68f;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:700;color:#00d68f">3</div>
+        <div style="padding-top:8px;">
+          <div style="font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;margin-bottom:4px;">FAISS index built</div>
+          <div style="font-size:0.78rem;color:var(--muted);line-height:1.6;">Indexed all 476 embeddings in a FAISS IndexFlatIP for fast cosine similarity search at query time</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:20px;align-items:flex-start;padding:20px 0;position:relative;z-index:1;">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--card-bg);border:2px solid #ffb347;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:700;color:#ffb347">4</div>
+        <div style="padding-top:8px;">
+          <div style="font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;margin-bottom:4px;">3 ML models trained</div>
+          <div style="font-size:0.78rem;color:var(--muted);line-height:1.6;">Trained Logistic Regression, Random Forest, and XGBoost on embeddings to classify papers by topic</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:20px;align-items:flex-start;padding:20px 0;position:relative;z-index:1;">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--card-bg);border:2px solid #00e5ff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:700;color:#00e5ff">5</div>
+        <div style="padding-top:8px;">
+          <div style="font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;margin-bottom:4px;">XGBoost achieved 0.70 F1</div>
+          <div style="font-size:0.78rem;color:var(--muted);line-height:1.6;">XGBoost outperformed other models with weighted F1 of 0.7044. Strong on cs.LG, cs.CV, cs.CL</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:20px;align-items:flex-start;padding:20px 0;position:relative;z-index:1;">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--card-bg);border:2px solid #7b61ff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:700;color:#7b61ff">6</div>
+        <div style="padding-top:8px;">
+          <div style="font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;margin-bottom:4px;">Semantic search deployed</div>
+          <div style="font-size:0.78rem;color:var(--muted);line-height:1.6;">FastAPI backend serving search, classification, and recommendation endpoints. Frontend built with vanilla JS</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Architecture -->
+    <div class="section-label">System Architecture</div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px;margin-bottom:40px;font-family:'DM Mono',monospace;font-size:0.8rem;line-height:2;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;">
+        <div>
+          <div style="color:var(--accent);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:16px">Data Pipeline</div>
+          <div style="color:var(--muted)">arXiv API</div>
+          <div style="color:var(--border);padding-left:20px;">↓</div>
+          <div style="color:var(--muted)">Paper Dataset (476)</div>
+          <div style="color:var(--border);padding-left:20px;">↓</div>
+          <div style="color:var(--text)">Sentence Transformers</div>
+          <div style="color:var(--border);padding-left:20px;">↓</div>
+          <div style="color:var(--text)">Embeddings (476 × 384)</div>
+          <div style="color:var(--border);padding-left:20px;">↓</div>
+          <div style="color:var(--accent)">FAISS Vector Index</div>
+        </div>
+        <div>
+          <div style="color:var(--accent2);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:16px">ML Pipeline</div>
+          <div style="color:var(--muted)">Embeddings</div>
+          <div style="color:var(--border);padding-left:20px;">↓</div>
+          <div style="color:var(--muted)">Label Encoding</div>
+          <div style="color:var(--border);padding-left:20px;">↓</div>
+          <div style="color:var(--muted)">Train/Test Split (80/20)</div>
+          <div style="color:var(--border);padding-left:20px;">↓</div>
+          <div style="color:var(--text)">LR + RF + XGBoost</div>
+          <div style="color:var(--border);padding-left:20px;">↓</div>
+          <div style="color:var(--accent2)">XGBoost (F1: 0.70) ✓</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tech Stack -->
+     <!-- Why XGBoost Won -->
+    <div class="section-label">Why XGBoost Won</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:40px;">
+      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:20px;">
+        <div style="font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;margin-bottom:8px;color:var(--accent)">Non-linear Boundaries</div>
+        <div style="font-size:0.75rem;color:var(--muted);line-height:1.7;">Logistic Regression assumes a linear decision boundary. Paper embeddings in 384D space have complex non-linear structure — XGBoost captures this with decision trees.</div>
+      </div>
+      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:20px;">
+        <div style="font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;margin-bottom:8px;color:var(--accent)">Feature Interactions</div>
+        <div style="font-size:0.75rem;color:var(--muted);line-height:1.7;">XGBoost automatically learns interactions between embedding dimensions. A paper about "vision transformers" activates both CV and NLP features — XGBoost handles this, LR can't.</div>
+      </div>
+      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:20px;">
+        <div style="font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;margin-bottom:8px;color:var(--accent)">Boosting</div>
+        <div style="font-size:0.75rem;color:var(--muted);line-height:1.7;">XGBoost builds trees sequentially, each one correcting the previous model's mistakes. This iterative error correction is why it outperforms a single Random Forest on this dataset.</div>
+      </div>
+    </div>
+    <div style="background:rgba(123,97,255,0.05);border:1px solid rgba(123,97,255,0.2);border-radius:10px;padding:16px 20px;margin-bottom:40px;font-size:0.78rem;line-height:1.7;color:var(--muted);">
+      💡 <span style="color:var(--text)">Bottom line:</span> Embeddings create a high-dimensional space with complex structure. Tree-based boosting navigates this better than linear models — which is why XGBoost consistently outperforms on tabular/embedding tasks.
+    </div>
+    <div class="section-label">Tech Stack</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:40px;">
+      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px;">
+        <div style="font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;margin-bottom:4px;">Python</div>
+        <div style="font-size:0.68rem;color:var(--muted);">Core language</div>
+      </div>
+      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px;">
+        <div style="font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;margin-bottom:4px;">Sentence Transformers</div>
+        <div style="font-size:0.68rem;color:var(--muted);">Text embeddings</div>
+      </div>
+      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px;">
+        <div style="font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;margin-bottom:4px;">FAISS</div>
+        <div style="font-size:0.68rem;color:var(--muted);">Vector similarity search</div>
+      </div>
+      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px;">
+        <div style="font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;margin-bottom:4px;">XGBoost</div>
+        <div style="font-size:0.68rem;color:var(--muted);">Best classifier</div>
+      </div>
+      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px;">
+        <div style="font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;margin-bottom:4px;">scikit-learn</div>
+        <div style="font-size:0.68rem;color:var(--muted);">ML utilities + metrics</div>
+      </div>
+      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px;">
+        <div style="font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;margin-bottom:4px;">FastAPI</div>
+        <div style="font-size:0.68rem;color:var(--muted);">REST API backend</div>
+      </div>
+      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px;">
+        <div style="font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;margin-bottom:4px;">arXiv API</div>
+        <div style="font-size:0.68rem;color:var(--muted);">Paper data source</div>
+      </div>
+      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px;">
+        <div style="font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;margin-bottom:4px;">Vanilla JS</div>
+        <div style="font-size:0.68rem;color:var(--muted);">Frontend</div>
+      </div>
+    </div>
+
+
+  </div>
+</body>
+</html>

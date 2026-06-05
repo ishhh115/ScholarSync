@@ -1,0 +1,16 @@
+[
+  {
+    "model": "all-MiniLM-L6-v2",
+    "f1": 0.6965,
+    "avg_search_score": 0.6049,
+    "embed_time_sec": 16.46,
+    "dimensions": 384
+  },
+  {
+    "model": "paraphrase-MiniLM-L6-v2",
+    "f1": 0.6859,
+    "avg_search_score": 0.6009,
+    "embed_time_sec": 9.23,
+    "dimensions": 384
+  }
+]

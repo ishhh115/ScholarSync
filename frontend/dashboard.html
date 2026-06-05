@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ScholarSync — Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <nav>
+    <a href="index.html" class="nav-logo">Scholar<span>Sync</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="discover.html">Discover</a></li>
+      <li><a href="assistant.html">AI Assistant</a></li>
+      <li><a href="dashboard.html" class="active">Dashboard</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="page-header">
+      <div class="page-tag">Analytics</div>
+      <h1 class="page-title"><em>AI Insights</em> Dashboard</h1>
+      <p class="page-sub">Model performance metrics, dataset statistics, and classification results.</p>
+    </div>
+
+    <!-- Stat cards -->
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-card-num" id="s-papers">—</div><div class="stat-card-label">Papers Indexed</div></div>
+      <div class="stat-card"><div class="stat-card-num">384</div><div class="stat-card-label">Embedding Dimensions</div></div>
+      <div class="stat-card"><div class="stat-card-num">0.70</div><div class="stat-card-label">Best F1 Score</div></div>
+      <div class="stat-card"><div class="stat-card-num">XGBoost</div><div class="stat-card-label">Best Model</div></div>
+    </div>
+
+    <!-- Model comparison -->
+    <div class="section-label">Model Comparison</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:40px;">
+      <div class="stat-card" style="border-color:rgba(0,229,255,0.3)">
+        <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px">XGBoost ✅ Best</div>
+        <div class="stat-card-num">0.7044</div>
+        <div class="stat-card-label">Weighted F1</div>
+        <div style="margin-top:12px;height:4px;background:var(--border);border-radius:2px;">
+          <div style="height:100%;width:70.44%;background:var(--accent);border-radius:2px;"></div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px">Logistic Regression</div>
+        <div class="stat-card-num" style="color:var(--accent2)">0.6965</div>
+        <div class="stat-card-label">Weighted F1</div>
+        <div style="margin-top:12px;height:4px;background:var(--border);border-radius:2px;">
+          <div style="height:100%;width:69.65%;background:var(--accent2);border-radius:2px;"></div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px">Random Forest</div>
+        <div class="stat-card-num" style="color:var(--muted)">0.6830</div>
+        <div class="stat-card-label">Weighted F1</div>
+        <div style="margin-top:12px;height:4px;background:var(--border);border-radius:2px;">
+          <div style="height:100%;width:68.3%;background:var(--muted);border-radius:2px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:40px;">
+      <div class="stat-card">
+        <div class="section-label" style="margin-bottom:16px">Category Distribution</div>
+        <canvas id="catChart" height="220"></canvas>
+      </div>
+      <div class="stat-card">
+        <div class="section-label" style="margin-bottom:16px">Per-Class F1 (XGBoost)</div>
+        <canvas id="f1Chart" height="220"></canvas>
+      </div>
+    </div>
+
+    <!-- Class breakdown -->
+     <!-- Embedding Model Comparison -->
+    <div class="section-label">Embedding Model Comparison</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:40px;">
+      <div class="stat-card" style="border-color:rgba(0,229,255,0.3)">
+        <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px">all-MiniLM-L6-v2 ✅ Winner</div>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px;">
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:0.72rem;margin-bottom:4px;"><span style="color:var(--muted)">Classifier F1</span><span style="color:var(--accent)">0.6965</span></div>
+            <div style="height:4px;background:var(--border);border-radius:2px;"><div style="height:100%;width:69.65%;background:var(--accent);border-radius:2px;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:0.72rem;margin-bottom:4px;"><span style="color:var(--muted)">Search Score</span><span style="color:var(--accent)">0.6049</span></div>
+            <div style="height:4px;background:var(--border);border-radius:2px;"><div style="height:100%;width:60.49%;background:var(--accent);border-radius:2px;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:0.72rem;margin-bottom:4px;"><span style="color:var(--muted)">Embed Time</span><span style="color:var(--muted)">16.46s</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px">paraphrase-MiniLM-L6-v2</div>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px;">
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:0.72rem;margin-bottom:4px;"><span style="color:var(--muted)">Classifier F1</span><span style="color:var(--accent2)">0.6859</span></div>
+            <div style="height:4px;background:var(--border);border-radius:2px;"><div style="height:100%;width:68.59%;background:var(--accent2);border-radius:2px;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:0.72rem;margin-bottom:4px;"><span style="color:var(--muted)">Search Score</span><span style="color:var(--accent2)">0.6009</span></div>
+            <div style="height:4px;background:var(--border);border-radius:2px;"><div style="height:100%;width:60.09%;background:var(--accent2);border-radius:2px;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:0.72rem;margin-bottom:4px;"><span style="color:var(--muted)">Embed Time</span><span style="color:var(--success)">9.23s (1.8x faster)</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="background:rgba(0,229,255,0.04);border:1px solid rgba(0,229,255,0.15);border-radius:10px;padding:16px 20px;margin-bottom:40px;font-size:0.78rem;line-height:1.7;color:var(--muted);">
+      💡 <span style="color:var(--text)">Takeaway:</span> all-MiniLM-L6-v2 produces better representations for academic text (higher F1 + search quality). paraphrase-MiniLM-L6-v2 is 1.8x faster but sacrifices accuracy — a classic <span style="color:var(--accent)">speed-accuracy tradeoff</span>.
+    </div>
+    <div class="section-label">Class Performance Detail</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+
+      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:16px 20px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:0.8rem">cs.CL — NLP</span>
+          <div style="display:flex;gap:12px;align-items:center;">
+            <span style="font-size:0.7rem;color:var(--muted)">support: 14</span>
+            <span style="font-size:0.8rem;font-family:'Syne',sans-serif;font-weight:700;color:var(--success)">0.84</span>
+          </div>
+        </div>
+        <div style="height:4px;background:var(--border);border-radius:2px;">
+          <div style="height:100%;width:84%;background:var(--success);border-radius:2px;"></div>
+        </div>
+      </div>
+
+      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:16px 20px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:0.8rem">cs.CV — Computer Vision</span>
+          <div style="display:flex;gap:12px;align-items:center;">
+            <span style="font-size:0.7rem;color:var(--muted)">support: 20</span>
+            <span style="font-size:0.8rem;font-family:'Syne',sans-serif;font-weight:700;color:var(--success)">0.85</span>
+          </div>
+        </div>
+        <div style="height:4px;background:var(--border);border-radius:2px;">
+          <div style="height:100%;width:85%;background:var(--success);border-radius:2px;"></div>
+        </div>
+      </div>
+
+      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:16px 20px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:0.8rem">cs.LG — Machine Learning</span>
+          <div style="display:flex;gap:12px;align-items:center;">
+            <span style="font-size:0.7rem;color:var(--muted)">support: 43</span>
+            <span style="font-size:0.8rem;font-family:'Syne',sans-serif;font-weight:700;color:var(--success)">0.85</span>
+          </div>
+        </div>
+        <div style="height:4px;background:var(--border);border-radius:2px;">
+          <div style="height:100%;width:85%;background:var(--success);border-radius:2px;"></div>
+        </div>
+      </div>
+
+      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:16px 20px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:0.8rem">other</span>
+          <div style="display:flex;gap:12px;align-items:center;">
+            <span style="font-size:0.7rem;color:var(--muted)">support: 7</span>
+            <span style="font-size:0.8rem;font-family:'Syne',sans-serif;font-weight:700;color:var(--accent)">0.31</span>
+          </div>
+        </div>
+        <div style="height:4px;background:var(--border);border-radius:2px;">
+          <div style="height:100%;width:31%;background:var(--accent);border-radius:2px;"></div>
+        </div>
+      </div>
+
+      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:16px 20px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:0.8rem">cs.AI — Artificial Intelligence</span>
+          <div style="display:flex;gap:12px;align-items:center;">
+            <span style="font-size:0.7rem;color:var(--muted)">support: 4</span>
+            <span style="font-size:0.8rem;font-family:'Syne',sans-serif;font-weight:700;color:var(--muted)">0.00</span>
+          </div>
+        </div>
+        <div style="height:4px;background:var(--border);border-radius:2px;">
+          <div style="height:100%;width:0%;background:var(--muted);border-radius:2px;"></div>
+        </div>
+      </div>
+
+      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:16px 20px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:0.8rem">stat.ML — Statistical ML</span>
+          <div style="display:flex;gap:12px;align-items:center;">
+            <span style="font-size:0.7rem;color:var(--muted)">support: 8</span>
+            <span style="font-size:0.8rem;font-family:'Syne',sans-serif;font-weight:700;color:var(--muted)">0.00</span>
+          </div>
+        </div>
+        <div style="height:4px;background:var(--border);border-radius:2px;">
+          <div style="height:100%;width:0%;background:var(--muted);border-radius:2px;"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="api.js"></script>
+  <script>
+    async function loadStats() {
+      const data = await apiFetch('/stats');
+      if (data) document.getElementById('s-papers').textContent = data.total_papers;
+    }
+    loadStats();
+
+    new Chart(document.getElementById('catChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['cs.LG', 'cs.CV', 'cs.CL', 'cs.AI', 'stat.ML', 'other'],
+        datasets: [{
+          data: [43, 20, 14, 4, 8, 7],
+          backgroundColor: ['#00e5ff','#7b61ff','#00d68f','#ffb347','#ff6b6b','#5a6a7a'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        plugins: { legend: { labels: { color: '#5a6a7a', font: { family: 'DM Mono', size: 11 } } } },
+        cutout: '65%'
+      }
+    });
+
+    new Chart(document.getElementById('f1Chart'), {
+      type: 'bar',
+      data: {
+        labels: ['cs.CL', 'cs.CV', 'cs.LG', 'other', 'cs.AI', 'stat.ML'],
+        datasets: [{
+          data: [0.84, 0.85, 0.85, 0.31, 0.00, 0.00],
+          backgroundColor: ['#00e5ff','#7b61ff','#00d68f','#ffb347','#ff6b6b','#5a6a7a'],
+          borderRadius: 6,
+          borderWidth: 0
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { color: '#5a6a7a', font: { family: 'DM Mono', size: 10 } }, grid: { color: '#1e2a35' } },
+          y: { min: 0, max: 1, ticks: { color: '#5a6a7a', font: { family: 'DM Mono', size: 10 } }, grid: { color: '#1e2a35' } }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

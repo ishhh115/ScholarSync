@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ScholarSync — Discover</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <nav>
+    <a href="index.html" class="nav-logo">Scholar<span>Sync</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="discover.html" class="active">Discover</a></li>
+      <li><a href="assistant.html">AI Assistant</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="page-header">
+      <div class="page-tag">Browse</div>
+      <h1 class="page-title">Discover <em>Papers</em></h1>
+      <p class="page-sub">Browse all indexed papers. Filter by category and sort by relevance.</p>
+    </div>
+
+    <!-- Search + Filters -->
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:24px;">
+      <div class="search-wrap" style="flex:1;min-width:260px;max-width:100%;">
+        <input type="text" class="search-box" id="filterInput" placeholder="Filter papers..." style="padding-right:20px;"/>
+      </div>
+      <select id="sortSelect" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-family:'DM Mono',monospace;font-size:0.8rem;color:var(--text);outline:none;cursor:pointer;">
+        <option value="default">Sort: Default</option>
+        <option value="title">Sort: Title A-Z</option>
+        <option value="category">Sort: Category</option>
+      </select>
+    </div>
+
+    <!-- Category pills -->
+    <div class="filter-bar" id="categoryFilters">
+      <button class="filter-pill active" data-cat="all" onclick="filterCat('all')">All</button>
+      <button class="filter-pill" data-cat="cs.LG" onclick="filterCat('cs.LG')">cs.LG — ML</button>
+      <button class="filter-pill" data-cat="cs.CL" onclick="filterCat('cs.CL')">cs.CL — NLP</button>
+      <button class="filter-pill" data-cat="cs.CV" onclick="filterCat('cs.CV')">cs.CV — Vision</button>
+      <button class="filter-pill" data-cat="cs.AI" onclick="filterCat('cs.AI')">cs.AI — AI</button>
+      <button class="filter-pill" data-cat="stat.ML" onclick="filterCat('stat.ML')">stat.ML</button>
+    </div>
+
+    <div class="section-label" id="countLabel">Loading papers...</div>
+    <div class="papers-grid" id="papersGrid">
+      <div class="empty-state"><div class="empty-icon">◎</div><p>Loading...</p></div>
+    </div>
+  </div>
+
+  <script src="api.js"></script>
+  <script>
+    let allPapers = [];
+    let activeCat = 'all';
+
+    async function loadPapers() {
+      // fetch via search with broad query to get papers
+      const categories = ['cs.LG','cs.CL','cs.CV','cs.AI','stat.ML','deep learning'];
+      let papers = [];
+      for (const q of categories) {
+        const data = await apiPost('/search', { query: q, top_k: 20 });
+        if (data) papers.push(...data.results.map((p,i) => ({...p, _idx: papers.length + i})));
+      }
+      // deduplicate by title
+      const seen = new Set();
+      allPapers = papers.filter(p => { if (seen.has(p.title)) return false; seen.add(p.title); return true; });
+      renderPapers();
+    }
+
+    function filterCat(cat) {
+      activeCat = cat;
+      document.querySelectorAll('.filter-pill[data-cat]').forEach(el => {
+        el.classList.toggle('active', el.dataset.cat === cat);
+      });
+      renderPapers();
+    }
+
+    function renderPapers() {
+      const query = document.getElementById('filterInput').value.toLowerCase();
+      const sort = document.getElementById('sortSelect').value;
+
+      let filtered = allPapers.filter(p => {
+        const matchCat = activeCat === 'all' || p.category === activeCat || p.predicted_category === activeCat;
+        const matchQ = !query || p.title.toLowerCase().includes(query) || p.abstract.toLowerCase().includes(query);
+        return matchCat && matchQ;
+      });
+
+      if (sort === 'title') filtered.sort((a,b) => a.title.localeCompare(b.title));
+      if (sort === 'category') filtered.sort((a,b) => a.predicted_category.localeCompare(b.predicted_category));
+
+      document.getElementById('countLabel').textContent = `${filtered.length} papers`;
+
+      if (!filtered.length) {
+        document.getElementById('papersGrid').innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">◎</div><p>No papers found.</p></div>';
+        return;
+      }
+
+      document.getElementById('papersGrid').innerHTML = filtered.map((p,i) => `
+        <div class="paper-card" style="animation:fadeUp 0.4s ease ${i*0.03}s both" onclick="window.location='paper.html?title=${encodeURIComponent(p.title)}'">
+          <div class="card-title" style="margin-bottom:8px">${esc(p.title)}</div>
+          <div class="card-abstract">${esc(p.abstract)}</div>
+          <div class="card-footer">
+            <span class="category-tag">${p.predicted_category}</span>
+            <span class="score-badge">${p.similarity_score.toFixed(3)}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    document.getElementById('filterInput').addEventListener('input', renderPapers);
+    document.getElementById('sortSelect').addEventListener('change', renderPapers);
+
+    loadPapers();
+    function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  </script>
+</body>
+</html>

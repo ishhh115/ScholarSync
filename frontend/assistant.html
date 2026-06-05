@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ScholarSync — AI Assistant</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <nav>
+    <a href="index.html" class="nav-logo">Scholar<span>Sync</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="discover.html">Discover</a></li>
+      <li><a href="assistant.html" class="active">AI Assistant</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="page-header">
+      <div class="page-tag">Research Assistant</div>
+      <h1 class="page-title">Your <em>AI Research</em> Copilot</h1>
+      <p class="page-sub">Paste any topic or research question. ScholarSync returns relevant papers, top keywords, and category breakdown — no LLM required.</p>
+    </div>
+
+    <!-- Input -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:32px;">
+      <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px">Research Topic</div>
+      <textarea id="topicInput" placeholder="e.g. Transformer architectures for medical image segmentation..." 
+        style="width:100%;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:16px;font-family:'DM Mono',monospace;font-size:0.85rem;color:var(--text);outline:none;resize:vertical;min-height:100px;line-height:1.6;"></textarea>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;flex-wrap:wrap;gap:12px;">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="filter-pill" onclick="setTopic('transformer architectures for healthcare')">transformers for healthcare</button>
+          <button class="filter-pill" onclick="setTopic('self-supervised learning computer vision')">self-supervised learning</button>
+          <button class="filter-pill" onclick="setTopic('graph neural networks molecular biology')">GNNs in biology</button>
+        </div>
+        <button class="btn btn-primary" onclick="analyze()">
+          <span id="analyzeBtn">Analyze Topic</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div id="output" style="display:none">
+      <!-- Summary -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:32px;">
+        <div class="stat-card">
+          <div class="stat-card-num" id="res-count">0</div>
+          <div class="stat-card-label">Relevant Papers</div>
+        </div>
+        <div class="stat-card">
+          <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--accent);line-height:1.2;margin-bottom:6px;" id="res-top-cat">—</div>
+          <div class="stat-card-label">Top Category</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-num" id="res-avg-score">—</div>
+          <div class="stat-card-label">Avg Similarity</div>
+        </div>
+      </div>
+
+      <!-- Keywords -->
+      <div class="section-label">Top Keywords Found</div>
+      <div id="keywords" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:32px;"></div>
+
+      <!-- Category breakdown -->
+      <div class="section-label">Category Breakdown</div>
+      <div id="catBreakdown" style="display:flex;flex-direction:column;gap:8px;margin-bottom:32px;"></div>
+
+      <!-- Papers -->
+      <div class="section-label" id="papersLabel">Relevant Papers</div>
+      <div class="papers-grid" id="assistantGrid"></div>
+    </div>
+
+    <div id="emptyAssistant" class="empty-state">
+      <div class="empty-icon">🤖</div>
+      <p>Enter a research topic above<br/>and ScholarSync will analyze it for you.</p>
+    </div>
+  </div>
+
+  <script src="api.js"></script>
+  <script>
+    function setTopic(t) {
+      document.getElementById('topicInput').value = t;
+    }
+
+    async function analyze() {
+      const topic = document.getElementById('topicInput').value.trim();
+      if (!topic) return;
+
+      const btn = document.getElementById('analyzeBtn');
+      btn.innerHTML = '<span class="spinner" style="border-top-color:#000"></span> Analyzing...';
+
+      const data = await apiPost('/search', { query: topic, top_k: 12 });
+      btn.innerHTML = 'Analyze Topic';
+
+      if (!data) {
+        document.getElementById('emptyAssistant').innerHTML = '<div class="error-box">⚠ Could not connect to API.</div>';
+        return;
+      }
+
+      const results = data.results;
+
+      // compute stats
+      document.getElementById('res-count').textContent = results.length;
+      const avgScore = (results.reduce((s,p) => s + p.similarity_score, 0) / results.length).toFixed(3);
+      document.getElementById('res-avg-score').textContent = avgScore;
+
+      // top category
+      const catCount = {};
+      results.forEach(p => { catCount[p.predicted_category] = (catCount[p.predicted_category]||0)+1; });
+      const topCat = Object.entries(catCount).sort((a,b)=>b[1]-a[1])[0];
+      document.getElementById('res-top-cat').textContent = topCat ? topCat[0] : '—';
+
+      // keywords — extract frequent words from titles
+      const stopwords = new Set(['the','a','an','of','in','for','and','with','on','to','from','by','via','using','based','towards','toward']);
+      const wordCount = {};
+      results.forEach(p => {
+        p.title.toLowerCase().replace(/[^a-z\s]/g,'').split(/\s+/).forEach(w => {
+          if (w.length > 3 && !stopwords.has(w)) wordCount[w] = (wordCount[w]||0)+1;
+        });
+      });
+      const topWords = Object.entries(wordCount).sort((a,b)=>b[1]-a[1]).slice(0,16);
+      document.getElementById('keywords').innerHTML = topWords.map(([w,c]) => `
+        <span style="padding:5px 12px;border-radius:20px;font-size:0.72rem;background:rgba(0,229,255,${Math.min(0.05+c*0.04,0.2)});border:1px solid rgba(0,229,255,${Math.min(0.1+c*0.05,0.4)});color:var(--accent)">${w} <span style="opacity:0.6">${c}</span></span>
+      `).join('');
+
+      // category breakdown
+      document.getElementById('catBreakdown').innerHTML = Object.entries(catCount).sort((a,b)=>b[1]-a[1]).map(([cat,count]) => `
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--card-bg);border:1px solid var(--border);border-radius:8px;">
+          <span class="category-tag">${cat}</span>
+          <div style="flex:1;height:4px;background:var(--border);border-radius:2px;">
+            <div style="height:100%;width:${(count/results.length*100).toFixed(0)}%;background:var(--accent2);border-radius:2px;"></div>
+          </div>
+          <span style="font-size:0.72rem;color:var(--muted)">${count} papers</span>
+        </div>
+      `).join('');
+
+      // papers
+      document.getElementById('papersLabel').textContent = `${results.length} Relevant Papers`;
+      document.getElementById('assistantGrid').innerHTML = results.map((p,i) => `
+        <div class="paper-card" style="animation:fadeUp 0.4s ease ${i*0.04}s both" onclick="window.location='paper.html?title=${encodeURIComponent(p.title)}'">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px;">
+            <div class="card-title">${esc(p.title)}</div>
+            <div class="score-badge">${p.similarity_score.toFixed(3)}</div>
+          </div>
+          <div class="card-abstract">${esc(p.abstract)}</div>
+          <div class="card-footer"><span class="category-tag">${p.predicted_category}</span></div>
+        </div>
+      `).join('');
+
+      document.getElementById('output').style.display = 'block';
+      document.getElementById('emptyAssistant').style.display = 'none';
+    }
+
+    function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  </script>
+</body>
+</html>
