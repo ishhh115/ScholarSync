@@ -1,0 +1,12 @@
+{
+  "tfidf": {
+    "f1": 0.6728,
+    "dims": 5000,
+    "type": "sparse lexical"
+  },
+  "embeddings": {
+    "f1": 0.6965,
+    "dims": 384,
+    "type": "dense semantic"
+  }
+}

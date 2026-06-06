@@ -77,6 +77,72 @@
       </a>
     </div>
 
+    <!-- Ablation Study -->
+    <div class="section-label">Ablation Study — TF-IDF vs Embeddings</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+      <div class="stat-card">
+        <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px">TF-IDF — Sparse Lexical</div>
+        <div class="stat-card-num" style="color:var(--muted)">0.6728</div>
+        <div class="stat-card-label">Weighted F1</div>
+        <div style="margin-top:8px;font-size:0.68rem;color:var(--muted)">5000 dimensions</div>
+        <div style="margin-top:12px;height:4px;background:var(--border);border-radius:2px;">
+          <div style="height:100%;width:67.28%;background:var(--muted);border-radius:2px;"></div>
+        </div>
+      </div>
+      <div class="stat-card" style="border-color:rgba(0,229,255,0.3)">
+        <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px">Sentence Transformer ✅ Winner</div>
+        <div class="stat-card-num">0.6965</div>
+        <div class="stat-card-label">Weighted F1</div>
+        <div style="margin-top:8px;font-size:0.68rem;color:var(--success)">384 dimensions — 13x smaller</div>
+        <div style="margin-top:12px;height:4px;background:var(--border);border-radius:2px;">
+          <div style="height:100%;width:69.65%;background:var(--accent);border-radius:2px;"></div>
+        </div>
+      </div>
+    </div>
+    <div style="background:rgba(0,229,255,0.04);border:1px solid rgba(0,229,255,0.15);border-radius:10px;padding:16px 20px;margin-bottom:40px;font-size:0.78rem;line-height:1.7;color:var(--muted);">
+      💡 <span style="color:var(--text)">Finding:</span> Dense semantic embeddings outperform sparse lexical representations despite being 13x smaller. TF-IDF treats words independently — it can't know "neural network" and "deep learning" are related. Sentence Transformers encode meaning, not just words.
+    </div>
+
+    <!-- Error Analysis -->
+    <div class="section-label">Error Analysis</div>
+    <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px;">
+      <div style="display:flex;gap:24px;margin-bottom:20px;flex-wrap:wrap;">
+        <div><div class="stat-card-num" style="font-size:1.4rem">23</div><div class="stat-card-label">Misclassified</div></div>
+        <div><div class="stat-card-num" style="font-size:1.4rem">73</div><div class="stat-card-label">Correct</div></div>
+        <div><div class="stat-card-num" style="font-size:1.4rem">76%</div><div class="stat-card-label">Accuracy</div></div>
+      </div>
+      <div class="section-label" style="margin-bottom:12px">Most Common Confusion Pairs</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:center;gap:12px;font-size:0.78rem;">
+          <span class="category-tag">stat.ML</span>
+          <span style="color:var(--muted)">→</span>
+          <span class="category-tag">cs.LG</span>
+          <span style="color:var(--muted);margin-left:auto">6 times</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:0.78rem;">
+          <span class="category-tag">other</span>
+          <span style="color:var(--muted)">→</span>
+          <span class="category-tag">cs.LG</span>
+          <span style="color:var(--muted);margin-left:auto">3 times</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:0.78rem;">
+          <span class="category-tag">cs.AI</span>
+          <span style="color:var(--muted)">→</span>
+          <span class="category-tag">cs.CL</span>
+          <span style="color:var(--muted);margin-left:auto">2 times</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:0.78rem;">
+          <span class="category-tag">cs.CV</span>
+          <span style="color:var(--muted)">→</span>
+          <span class="category-tag">cs.LG</span>
+          <span style="color:var(--muted);margin-left:auto">2 times</span>
+        </div>
+      </div>
+    </div>
+    <div style="background:rgba(0,229,255,0.04);border:1px solid rgba(0,229,255,0.15);border-radius:10px;padding:16px 20px;margin-bottom:40px;font-size:0.78rem;line-height:1.7;color:var(--muted);">
+      💡 <span style="color:var(--text)">Insight:</span> Most confusion occurs between stat.ML and cs.LG — genuinely overlapping domains. Many misclassified papers are interdisciplinary by nature, suggesting category ambiguity in the data rather than pure model weakness.
+    </div>
+
     <!-- Charts -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:40px;">
       <div class="stat-card">

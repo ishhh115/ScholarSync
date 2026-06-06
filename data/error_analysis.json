@@ -1,0 +1,69 @@
+{
+  "total_mistakes": 23,
+  "total_test": 96,
+  "accuracy": 0.7604,
+  "confusion_pairs": {
+    "other \u2192 cs.LG": 3,
+    "cs.CV \u2192 cs.LG": 1,
+    "cs.CV \u2192 other": 1,
+    "stat.ML \u2192 cs.LG": 6,
+    "cs.CL \u2192 other": 1,
+    "cs.LG \u2192 other": 2,
+    "cs.AI \u2192 cs.CL": 2,
+    "stat.ML \u2192 cs.CV": 2,
+    "other \u2192 cs.CV": 1,
+    "cs.AI \u2192 cs.LG": 2,
+    "cs.CV \u2192 cs.CL": 1,
+    "other \u2192 cs.CL": 1
+  },
+  "examples": [
+    {
+      "title": "Deep-learning-powered data analysis in plankton ecology",
+      "true_label": "other",
+      "predicted_label": "cs.LG",
+      "abstract": "The implementation of deep learning algorithms has brought new perspectives to plankton ecology. Emerging as an alternative approach to established methods, deep learning offers objective schemes to i"
+    },
+    {
+      "title": "Multi-modal Co-learning for Earth Observation: Enhancing single-modality models via modality collaboration",
+      "true_label": "cs.CV",
+      "predicted_label": "cs.LG",
+      "abstract": "Multi-modal co-learning is emerging as an effective paradigm in machine learning, enabling models to collaboratively learn from different modalities to enhance single-modality predictions. Earth Obser"
+    },
+    {
+      "title": "Are Vision-Language Models Ready for Dietary Assessment? Exploring the Next Frontier in AI-Powered Food Image Recognition",
+      "true_label": "cs.CV",
+      "predicted_label": "other",
+      "abstract": "Automatic dietary assessment based on food images remains a challenge, requiring precise food detection, segmentation, and classification. Vision-Language Models (VLMs) offer new possibilities by inte"
+    },
+    {
+      "title": "Changing Data Sources in the Age of Machine Learning for Official Statistics",
+      "true_label": "stat.ML",
+      "predicted_label": "cs.LG",
+      "abstract": "Data science has become increasingly essential for the production of official statistics, as it enables the automated collection, processing, and analysis of large amounts of data. With such data scie"
+    },
+    {
+      "title": "End-to-End Reinforcement Learning for Torque Based Variable Height Hopping",
+      "true_label": "other",
+      "predicted_label": "cs.LG",
+      "abstract": "Legged locomotion is arguably the most suited and versatile mode to deal with natural or unstructured terrains. Intensive research into dynamic walking and running controllers has recently yielded gre"
+    },
+    {
+      "title": "Direct Feedback Alignment Scales to Modern Deep Learning Tasks and Architectures",
+      "true_label": "stat.ML",
+      "predicted_label": "cs.LG",
+      "abstract": "Despite being the workhorse of deep learning, the backpropagation algorithm is no panacea. It enforces sequential layer updates, thus preventing efficient parallelization of the training process. Furt"
+    },
+    {
+      "title": "End-to-End Spoken Language Understanding: Performance analyses of a voice command task in a low resource setting",
+      "true_label": "cs.CL",
+      "predicted_label": "other",
+      "abstract": "Spoken Language Understanding (SLU) is a core task in most human-machine interaction systems. With the emergence of smart homes, smart phones and smart speakers, SLU has become a key technology for th"
+    },
+    {
+      "title": "Migration through Machine Learning Lens -- Predicting Sexual and Reproductive Health Vulnerability of Young Migrants",
+      "true_label": "cs.LG",
+      "predicted_label": "other",
+      "abstract": "In this paper, we have discussed initial findings and results of our experiment to predict sexual and reproductive health vulnerabilities of migrants in a data-constrained environment. Notwithstanding"
+    }
+  ]
+}
