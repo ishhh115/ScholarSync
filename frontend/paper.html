@@ -63,6 +63,9 @@
       }
 
       document.title = `ScholarSync — ${paper.title}`;
+      if (paper.arxiv_url) {
+    document.getElementById('arxivLink').href = paper.arxiv_url;
+}
 
       document.getElementById('paperContent').innerHTML = `
         <div style="margin-bottom:12px;">
@@ -89,6 +92,9 @@
         <div style="font-size:0.85rem;line-height:1.9;color:var(--text);max-width:760px;padding:24px;background:var(--surface);border:1px solid var(--border);border-radius:12px;">
           ${esc(paper.abstract.replace('...',''))}
         </div>
+        <a id="arxivLink" href="#" target="_blank" class="btn btn-primary" style="display:inline-flex;margin-top:20px;">
+  Read Full Paper on arXiv →
+</a>
       `;
 
       // load similar papers
